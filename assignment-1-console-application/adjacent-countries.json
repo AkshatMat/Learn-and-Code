@@ -1,0 +1,55 @@
+{
+    "adjacent_countries": {
+        "US": {
+            "land_borders": ["CA", "MX"],
+            "maritime_borders": ["RU"]
+        },
+        "CA": {
+            "land_borders": ["US"]
+        },
+        "MX": {
+            "land_borders": ["US", "GT", "BZ"]
+        },
+        "IN": {
+            "land_borders": ["PK", "CN", "NP", "BD", "BT", "MM"],
+            "maritime_borders": ["LK"]
+        },
+        "CN": {
+            "land_borders": ["RU", "MN", "KP", "KR", "VN", "LA", "MM", "BT", "NP", "IN", "KZ", "KG", "TJ"],
+            "maritime_borders": ["JP", "PH"]
+        },
+        "RU": {
+            "land_borders": ["CN", "KZ", "MN", "KP", "UA", "BY", "LV", "EE", "NO", "FI", "GE", "AZ"]
+        },
+        "DE": {
+            "land_borders": ["DK", "PL", "CZ", "NL", "BE", "LU", "FR", "CH", "AT"],
+            "maritime_borders": ["SE"]
+        },
+        "FR": {
+            "land_borders": ["BE", "LU", "DE", "CH", "IT", "AD", "ES"],
+            "maritime_borders": ["UK", "IE"]
+        },
+        "GB": {
+            "land_borders": ["IE"],
+            "maritime_borders": ["FR"]
+        },
+        "BR": {
+            "land_borders": ["AR", "BO", "CO", "GY", "PY", "PE", "SR", "UY", "VE"]
+        },
+        "AU": {
+            "maritime_borders": ["ID", "NZ", "PG", "SB", "TL"]
+        },
+        "JP": {
+            "maritime_borders": ["CN", "KR", "RU"]
+        }
+    },
+    "border_types": {
+        "land_borders": "Directly connected by land",
+        "maritime_borders": "Separated by sea but considered geographically close"
+    },
+    "metadata": {
+        "version": "1.0",
+        "last_updated": "2024-01-15",
+        "total_countries_with_border_data": 12
+    }
+}

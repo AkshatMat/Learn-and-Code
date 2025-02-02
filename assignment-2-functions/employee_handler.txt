@@ -1,0 +1,40 @@
+The eariler code does not follow SOLID as it violated SRP,OCP and ISP.
+
+The improved code structure is defined below:
+
+interface IEmployeeRepository {
+    saveEmployeeToDatabase()
+    terminateEmployee()
+}
+
+interface IReportGenerator {
+    generateReport()
+}
+
+interface IEmployeeStatus {
+    boolisWorking()
+}
+
+class Employee {
+    intid
+    stringname
+    stringdepartment
+    boolworking
+}
+
+class XMLReportGenerator implements IReportGenerator {
+    generateReport()
+}
+
+class CSVReportGenerator implements IReportGenerator {
+    generateReport()
+}
+
+class EmployeeRepository implements IEmployeeRepository {
+    saveEmployeeToDatabase()
+    terminateEmployee()
+}
+
+class EmployeeStatus implements IEmployeeStatus {
+    boolisWorking()
+}

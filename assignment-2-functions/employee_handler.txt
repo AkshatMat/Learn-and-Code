@@ -16,10 +16,10 @@ interface IEmployeeStatus {
 }
 
 class Employee {
-    intid
-    stringname
-    stringdepartment
-    boolworking
+    int id
+    string name
+    string department
+    bool working
 }
 
 class XMLReportGenerator implements IReportGenerator {

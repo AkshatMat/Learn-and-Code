@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant Client
+    participant DatabaseFactory
+    participant DatabaseConnection
+    participant DataSource
+    participant PostgresBase
+    participant FollowRepository
+    participant Users
+
+    Client->>DatabaseFactory: getInstance(DbType)
+    DatabaseFactory->>DatabaseConnection: create connection
+    DatabaseConnection->>DataSource: initialize()
+    
+    Client->>DatabaseFactory: getConnection(DbType)
+    DatabaseFactory->>DatabaseConnection: establish connection
+    DatabaseConnection->>PostgresBase: getConnection(DbType)
+    
+    Client->>FollowRepository: addFollower(followerId, followeeId)
+    FollowRepository->>PostgresBase: getRepository(Users)
+    PostgresBase-->>FollowRepository: return Repository
+    
+    FollowRepository->>Users: create/update follow relationship
+    
+    Client->>DatabaseFactory: disconnect()
+    DatabaseFactory->>DatabaseConnection: disconnect()
+    DatabaseConnection->>DataSource: destroy()

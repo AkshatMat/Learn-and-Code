@@ -1,0 +1,125 @@
+---
+config:
+  layout: elk
+  theme: neutral
+  look: classic
+---
+classDiagram
+direction TB
+    class DataSource {
+	    +manager: EntityManager
+	    +initialize() : Promise~void~
+	    +destroy() : Promise~void~
+    }
+    class DatabaseConnection {
+	    #pool: DataSource
+	    #config: DataSourceOptions
+	    +Pool: DataSource
+	    +initialize() : Promise~void~
+	    +disconnect() : Promise~void~
+    }
+    class DatabaseFactory {
+	    +static getInstance(type: DbType) : DatabaseConnection
+	    +static getConnection(type: DbType) : Promise~DatabaseConnection~
+    }
+    class Base {
+	    -connection: DatabaseConnection
+	    #getConnection~T~(dbType: DbType) : Promise~EntityManager~
+    }
+    class PostgresBase {
+	    #getRepository~T~(entity: EntityTarget~T~) : Promise~Repository~
+    }
+    class MongoDbBase {
+	    #getRepository~T~(entity: EntityTarget~T~) : Promise~Repository~
+    }
+    class PostgresConfig {
+	    +host: string
+	    +port: number
+	    +database: string
+	    +username: string
+	    +password: string
+	    +synchronize: boolean
+	    +logging: boolean
+	    +poolSize: number
+	    +dbConfig: DataSourceOptions
+    }
+    class MongodbConfig {
+	    +url: string
+	    +database: string
+	    +synchronize: boolean
+	    +logging: boolean
+	    +dbConfig: DataSourceOptions
+    }
+    class CustomNamingStrategy {
+	    +tableName(targetName: string, userSpecifiedName: string | undefined) : string
+    }
+    class PostgresConnection {
+	    -static instance: PostgresConnection
+	    +static Instance: PostgresConnection
+    }
+    class MongodbConnection {
+	    -static instance: MongodbConnection
+	    +static Instance: MongodbConnection
+    }
+    class Users {
+	    +id: number
+	    +email: string
+	    +fullname: string
+	    +dob: Date
+	    +username: string
+	    +profileImg: string
+	    +followers: Follows[]
+	    +followees: Follows[]
+    }
+    class Follows {
+	    +id: number
+	    +createdAt: Date
+	    +updatedAt: Date
+	    +followerId: number
+	    +followeeId: number
+	    +followee: Users
+	    +follower: Users
+    }
+    class IFollowRepository {
+	    +addFollower(followerId: number, followeeId: number) : Promise~number~
+	    +deleteFollower(followerId: number, followeeId: number) : Promise~number | null~
+	    +getFollowersByFolloweeId(followeeId: number) : Promise~Partial~User~~
+	    +getFolloweesByFollowerId(followerId: number) : Promise~Partial~User~~
+    }
+    class FollowRepository {
+	    +static Instance: FollowRepository
+	    +addFollower(followerId: number, followeeId: number) : Promise~number~
+	    +deleteFollower(followerId: number, followeeId: number) : Promise~number | null~
+	    +getFollowersByFolloweeId(followeeId: number) : Promise~Partial~User~~
+	    +getFolloweesByFollowerId(followerId: number) : Promise~Partial~User~~
+    }
+    class IDatabaseConfig {
+	    +type?: DbType
+	    +host: string
+	    +port: number
+	    +database: string
+	    +username: string
+	    +password: string
+	    +synchronize: boolean
+	    +logging: boolean
+	    +entities?: string[]
+    }
+
+	<<interface>> IFollowRepository
+	<<interface>> IDatabaseConfig
+
+    DatabaseConnection <|-- PostgresConnection
+    DatabaseConnection <|-- MongodbConnection
+    Base <|-- PostgresBase
+    Base <|-- MongoDbBase
+    IFollowRepository <|.. FollowRepository : implements
+    PostgresBase <.. FollowRepository : extends
+    DatabaseConnection "1" *-- "1" DataSource : contains
+    DatabaseFactory ..> DatabaseConnection : creates
+    PostgresConfig "1" *-- "1" CustomNamingStrategy : uses
+    Users "1" -- "many" Follows : has
+    Follows "many" -- "1" Users : references
+    FollowRepository --> Follows : manages
+    FollowRepository --> Users : uses
+    PostgresConnection "1" *-- "1" PostgresConfig : configured by
+    MongodbConnection "1" *-- "1" MongodbConfig : configured by

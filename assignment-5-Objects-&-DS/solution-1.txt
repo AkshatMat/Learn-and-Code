@@ -1,0 +1,1 @@
+employee is an object as it is an instance for class Employee.

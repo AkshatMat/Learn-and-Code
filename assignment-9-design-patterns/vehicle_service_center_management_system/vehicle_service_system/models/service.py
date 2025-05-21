@@ -34,7 +34,6 @@ class CarBrakeInspectionService(Service):
     def get_cost(self) -> float:
         return SC.CAR_BRAKE_INSPECTION_COST
 
-
 class CarTireRotationService(Service):
     def perform_service(self) -> str:
         return "Rotated and balanced all car tires"

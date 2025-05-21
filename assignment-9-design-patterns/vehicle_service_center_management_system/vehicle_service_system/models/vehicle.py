@@ -1,7 +1,3 @@
-"""
-Vehicle interface and implementations for Vehicle Service Center Management System
-"""
-
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any
 from datetime import datetime

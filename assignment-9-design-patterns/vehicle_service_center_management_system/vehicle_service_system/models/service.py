@@ -14,7 +14,6 @@ class Service(ABC):
     def get_cost(self) -> float:
         pass
 
-
 class CarOilChangeService(Service):
     def perform_service(self) -> str:
         return "Changed car oil with premium synthetic oil"
@@ -24,7 +23,6 @@ class CarOilChangeService(Service):
     
     def get_cost(self) -> float:
         return SC.CAR_OIL_CHANGE_COST
-
 
 class CarBrakeInspectionService(Service):
     def perform_service(self) -> str:
@@ -47,7 +45,6 @@ class CarTireRotationService(Service):
     def get_cost(self) -> float:
         return SC.CAR_TIRE_ROTATION_COST
 
-
 class BikeChainLubricationService(Service):    
     def perform_service(self) -> str:
         return "Lubricated bike chain for smooth operation"
@@ -69,7 +66,6 @@ class BikeBrakeTighteningService(Service):
     def get_cost(self) -> float:
         return SC.BIKE_BRAKE_TIGHTENING_COST
 
-
 class TruckEngineDiagnosticsService(Service):
     def perform_service(self) -> str:
         return "Performed heavy-duty engine diagnostics on truck"
@@ -79,7 +75,6 @@ class TruckEngineDiagnosticsService(Service):
     
     def get_cost(self) -> float:
         return SC.TRUCK_ENGINE_DIAGNOSTICS_COST
-
 
 class TruckCargoInspectionService(Service):
     def perform_service(self) -> str:

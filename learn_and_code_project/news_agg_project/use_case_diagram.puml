@@ -1,0 +1,97 @@
+@startuml
+' News Aggregator - Clean Use Case Diagram
+
+left to right direction
+skinparam actorStyle awesome
+skinparam usecaseBorderColor #333
+skinparam usecaseBackgroundColor #F9F9F9
+skinparam packageBorderColor #AAA
+skinparam packageBackgroundColor #F3F3F3
+
+' =======================
+' ACTORS
+' =======================
+actor EndUser as "End User"
+actor Admin as "Admin"
+actor APIClient as "API Client/System"
+
+' =======================
+' USER USE CASES
+' =======================
+package "User Features" {
+  usecase UC_Register as "Register"
+  usecase UC_Login as "Login"
+  usecase UC_Browse as "Browse News"
+  usecase UC_Search as "Search News"
+  usecase UC_ViewArticle as "View Article"
+  usecase UC_Save as "Save Article"
+  usecase UC_ViewSaved as "View Saved Articles"
+  usecase UC_DeleteSaved as "Delete Saved Article"
+  usecase UC_Feedback as "Give Feedback"
+  usecase UC_SetNotif as "Set Notification Preferences"
+  usecase UC_ViewNotifs as "View Notifications"
+}
+
+EndUser --> UC_Register
+EndUser --> UC_Login
+EndUser --> UC_Browse
+EndUser --> UC_Search
+EndUser --> UC_ViewArticle
+EndUser --> UC_Save
+EndUser --> UC_ViewSaved
+EndUser --> UC_DeleteSaved
+EndUser --> UC_Feedback
+EndUser --> UC_SetNotif
+EndUser --> UC_ViewNotifs
+
+' =======================
+' ADMIN USE CASES
+' =======================
+package "Admin Features" {
+  usecase UC_AdminLogin as "Login"
+  usecase UC_ViewAPIs as "View APIs"
+  usecase UC_ManageAPI as "Manage APIs"
+  usecase UC_ViewUsers as "View Users"
+  usecase UC_ViewAllArticles as "View All Articles"
+}
+
+Admin --> UC_AdminLogin
+Admin --> UC_ViewAPIs
+Admin --> UC_ManageAPI
+Admin --> UC_ViewUsers
+Admin --> UC_ViewAllArticles
+
+' =======================
+' SYSTEM/API CLIENT USE CASES
+' =======================
+package "System/API Client" {
+  usecase UC_FetchNews as "Fetch News from APIs"
+  usecase UC_StoreNews as "Store News"
+  usecase UC_SendNotifs as "Send Notifications"
+}
+
+APIClient --> UC_FetchNews
+APIClient --> UC_StoreNews
+APIClient --> UC_SendNotifs
+
+' =======================
+' NOTES
+' =======================
+note left of EndUser
+  End User:
+  - Registers, logs in
+  - Browses, searches, saves news
+  - Sets notifications, gives feedback
+end note
+note right of Admin
+  Admin:
+  - Manages APIs
+  - Views users and articles
+end note
+note right of APIClient
+  API Client/System:
+  - Fetches news from APIs
+  - Stores news
+  - Sends notifications
+end note
+@enduml 

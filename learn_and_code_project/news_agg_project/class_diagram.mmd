@@ -1,0 +1,340 @@
+classDiagram
+
+%% =======================
+%% EXCEPTION HIERARCHY
+%% =======================
+class NewsAggregatorException
+class AuthenticationError
+class AuthorizationError
+class ValidationError
+class DatabaseError
+class UserNotFoundError
+class ArticleNotFoundError
+class PasswordError
+class JWTError
+class ConnectionError
+class APIError
+class NotificationError
+class EmailError
+class ServiceError
+class ManagerError
+
+NewsAggregatorException <|-- AuthenticationError
+NewsAggregatorException <|-- AuthorizationError
+NewsAggregatorException <|-- ValidationError
+NewsAggregatorException <|-- DatabaseError
+NewsAggregatorException <|-- UserNotFoundError
+NewsAggregatorException <|-- ArticleNotFoundError
+NewsAggregatorException <|-- PasswordError
+NewsAggregatorException <|-- JWTError
+NewsAggregatorException <|-- ConnectionError
+NewsAggregatorException <|-- APIError
+NewsAggregatorException <|-- NotificationError
+NewsAggregatorException <|-- EmailError
+NewsAggregatorException <|-- ServiceError
+NewsAggregatorException <|-- ManagerError
+
+%% =======================
+%% CONFIGURATION & DATABASE
+%% =======================
+class Settings {
+  +BASE_URL: str
+  +CATEGORIES: List[str>
+  +DB_NAME: str
+  +DB_USER: str
+  +DB_PASSWORD: str
+  +DB_HOST: str
+  +DB_PORT: str
+  +DB_MIN_CONNECTIONS: int
+  +DB_MAX_CONNECTIONS: int
+  +MIN_CONTENT_LENGTH: int
+  +REQUEST_TIMEOUT: int
+}
+
+class DatabaseConnection {
+  -_pool: Optional[SimpleConnectionPool]
+  +initialize_pool() None
+  +_ensure_tables_exist() None
+  +get_connection()
+  +get_cursor()
+  +close_pool() None
+}
+
+%% =======================
+%% UTILITY CLASSES
+%% =======================
+class JWTUtils {
+  +generate_token(username: str) str
+  +decode_token(token: str) dict
+}
+
+class PasswordUtils {
+  +verify_password(plain_password: str, hashed_password: str) bool
+}
+
+class hash_password {
+  +hash_password(password: str) str
+}
+
+%% =======================
+%% MANAGER LAYER
+%% =======================
+class APIManager {
+  +__init__(cursor)
+  +get_all_apis()
+  +get_api_by_name(api_name: str)
+  +upsert_api(api_url: str, status: str, api_key: str, name: str)
+  +delete_api(api_url: str)
+  +update_api_status(api_name: str, status: str)
+}
+
+class NewsManager {
+  +__init__(cursor)
+  +fetch_headlines(start_date: str, end_date: str, category: str = None)
+  +search_articles_by_keyword(keyword: str)
+}
+
+class SavedArticleManager {
+  +__init__(cursor)
+  +get_saved_articles(user_id: str)
+  +save_article(user_id: str, article_id: str)
+  +delete_saved_article(user_id: str, article_id: str)
+}
+
+class ArticleFeedbackManager {
+  +__init__(cursor)
+  +save_feedback(user_id: str, article_id: str, feedback: str)
+  +get_feedback_by_user(user_id: str)
+}
+
+class NotificationManager {
+  +__init__(cursor)
+  +get_user_preferences(user_id)
+  +update_category_preference(user_id, category, is_enabled)
+  +get_user_keywords(user_id)
+  +update_user_keywords(user_id, keywords)
+  +fetch_unviewed_notifications(user_id)
+  +mark_notification_as_viewed(user_id, article_id)
+  +mark_notifications_as_viewed(user_id)
+  +get_all_users()
+  +get_users_for_article_notification(category, content)
+  +create_notification(user_id, article_id)
+  +get_user_email(user_id)
+}
+
+class UserManager {
+  +__init__(cursor)
+  +insert_user(username: str, email: str, hashed_password: str, role: str)
+  +fetch_user(username: str)
+}
+
+class AdminManager {
+  +__init__(cursor)
+  +fetch_admin(username: str)
+  +insert_admin(username: str, plain_password: str)
+}
+
+%% =======================
+%% SERVICE LAYER
+%% =======================
+class APIService {
+  +get_all_apis()
+  +get_api_by_name(api_name: str)
+  +upsert_api(api_url: str, status: str, api_key: str, name: str)
+  +delete_api(api_url: str)
+  +update_api_status(api_name: str, status: str)
+}
+
+class NewsService {
+  +get_today_headlines(category="All")
+  +get_range_headlines(start_date: str, end_date: str, category="All")
+}
+
+class HeadlinesService {
+  +get_headlines(start_date: str, end_date: str, category: str = "All")
+  +search_headlines_by_keyword(keyword: str)
+}
+
+class SavedArticleService {
+  +save(user_id, article_id)
+  +delete(user_id, article_id)
+  +fetch_all(user_id)
+}
+
+class FeedbackService {
+  +give_feedback(user_id: str, article_id: str, feedback: str)
+}
+
+class SignupService {
+  +signup(params: SignUpParams)
+}
+
+class UserLogInService {
+  +login(params: LogInParams)
+}
+
+class AdminLogInService {
+  +login(params: LogInParams)
+}
+
+class NotificationService {
+  +get_user_preferences(user_id: str)
+  +update_category_preference(user_id: str, category: str, enabled: bool)
+  +get_keywords(user_id: str)
+  +update_keywords(user_id: str, keywords: list)
+  +get_unviewed_notifications(user_id: str)
+  +mark_notification_as_viewed(user_id: str, article_id: str)
+  +mark_all_as_viewed(user_id: str)
+  +send_notification_email(user_id: str, article_data: dict)
+  +process_new_article_notifications(article_data: dict)
+  +get_user_email(user_id: str)
+}
+
+class UserService {
+  +save_article(user_id: str, article_id: str)
+  +get_saved_articles(user_id: str)
+  +delete_saved_article(user_id: str, article_id: str)
+}
+
+%% =======================
+%% SERVER SIDE CLASSES
+%% =======================
+class NewsArticle {
+  +title: str
+  +source: str
+  +url: str
+  +category: str
+  +author: Optional[str]
+  +published_at: Optional[str]
+  +id: str
+  +full_title: Optional[str]
+  +full_content: Optional[str]
+  +keywords: List[str]
+  +__post_init__()
+}
+
+class BaseScraper {
+  <<abstract>>
+  +extract(url: str) Tuple[str, str, List[str]]
+  +name: str
+}
+
+class BS4Scraper {
+  +name: str
+  +extract(url: str) Tuple[str, str, List[str]]
+}
+
+class NewspaperScraper {
+  +name: str
+  +extract(url: str) Tuple[str, str, List[str]]
+}
+
+class SeleniumScraper {
+  +name: str
+  +extract(url: str) Tuple[str, str, List[str]]
+}
+
+class ScraperService {
+  +scrapers: List[BaseScraper]
+  +__init__(scrapers: Optional[List[BaseScraper]])
+  +extract_article(url: str) Tuple[str, str, List[str]]
+  +add_scraper(scraper: BaseScraper) None
+  +remove_scraper(scraper_name: str) None
+}
+
+class BaseRepository {
+  <<abstract>>
+  +save(article: NewsArticle) bool
+  +get_by_id(article_id: str) Optional[NewsArticle]
+  +get_all() List[NewsArticle]
+  +delete(article_id: str) bool
+}
+
+class FileRepository {
+  +output_dir
+  +clear_all_articles() bool
+  +get_articles_count() int
+  +get_repository_stats() Dict[str, Any]
+  +_article_to_dict(article: NewsArticle) Dict[str, Any]
+  +_dict_to_article(data: Dict[str, Any]) NewsArticle
+  +_get_article_filepath(article_id: str) str
+  +save(article: NewsArticle) bool
+  +get_by_id(article_id: str) Optional[NewsArticle]
+  +get_all() List[NewsArticle]
+  +delete(article_id: str) bool
+  +close_connection() None
+}
+
+class NewsScheduler {
+  +interval_hours: int
+  +aggregator_service: AggregatorService
+  +file_repository: FileRepository
+  +is_running: bool
+  +last_run_time: Optional[datetime]
+  +success_count: int
+  +error_count: int
+  +__init__(interval_hours: int = 4)
+  +clear_output_directory() bool
+  +run_once() bool
+  +schedule_custom_job(job_func: Callable, interval_hours: int) None
+  +get_next_run_info() Optional[str]
+}
+
+%% =======================
+%% INHERITANCE RELATIONSHIPS
+%% =======================
+BaseScraper <|-- BS4Scraper
+BaseScraper <|-- NewspaperScraper
+BaseScraper <|-- SeleniumScraper
+BaseRepository <|-- FileRepository
+
+%% =======================
+%% COMPOSITION RELATIONSHIPS
+%% =======================
+%% Database Layer
+DatabaseConnection --> Settings
+
+%% Manager Layer Dependencies
+APIManager --> DatabaseConnection
+NewsManager --> DatabaseConnection
+SavedArticleManager --> DatabaseConnection
+ArticleFeedbackManager --> DatabaseConnection
+NotificationManager --> DatabaseConnection
+UserManager --> DatabaseConnection
+AdminManager --> DatabaseConnection
+
+%% Service Layer Dependencies
+APIService --> APIManager
+APIService --> DatabaseConnection
+NewsService --> NewsManager
+NewsService --> DatabaseConnection
+HeadlinesService --> NewsManager
+HeadlinesService --> DatabaseConnection
+SavedArticleService --> SavedArticleManager
+SavedArticleService --> DatabaseConnection
+FeedbackService --> ArticleFeedbackManager
+FeedbackService --> DatabaseConnection
+SignupService --> UserManager
+SignupService --> DatabaseConnection
+SignupService --> hash_password
+UserLogInService --> UserManager
+UserLogInService --> DatabaseConnection
+UserLogInService --> PasswordUtils
+UserLogInService --> JWTUtils
+AdminLogInService --> AdminManager
+AdminLogInService --> DatabaseConnection
+AdminLogInService --> PasswordUtils
+AdminLogInService --> JWTUtils
+NotificationService --> NotificationManager
+NotificationService --> DatabaseConnection
+NotificationService --> Settings
+UserService --> SavedArticleManager
+UserService --> DatabaseConnection
+
+%% Server Side Dependencies
+ScraperService --> BaseScraper
+ScraperService --> BS4Scraper
+ScraperService --> NewspaperScraper
+ScraperService --> SeleniumScraper
+FileRepository --> NewsArticle
+NewsScheduler --> FileRepository 

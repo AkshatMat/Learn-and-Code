@@ -1,0 +1,74 @@
+Table user_table {
+  uuid UUID [pk, note: 'Primary key, unique user identifier']
+  username TEXT [not null, unique, note: 'Unique username']
+  email TEXT [not null, unique, note: 'User email address']
+  password TEXT [not null, note: 'Hashed password']
+  role TEXT [not null, note: 'User role (e.g., user, admin)']
+}
+
+Table news_table {
+  uuid UUID [pk, note: 'Primary key, unique article identifier']
+  published_at TIMESTAMP [note: 'Publication date/time']
+  category TEXT [note: 'News category']
+  keywords TEXT[] [note: 'Array of keywords']
+  content TEXT [note: 'Full article content']
+  title TEXT [not null, note: 'Article title']
+  author TEXT [note: 'Article author']
+  source TEXT [note: 'News source']
+  url TEXT [not null, unique, note: 'Article URL']
+  created_at TIMESTAMP [note: 'Record creation timestamp']
+}
+
+Table saved_article_table {
+  user_id UUID [ref: > user_table.uuid, not null, note: 'FK to user_table']
+  article_id UUID [ref: > news_table.uuid, not null, note: 'FK to news_table']
+  created_at TIMESTAMP [note: 'When the article was saved']
+  Indexes {
+    (user_id, article_id) [unique, note: 'Each user can save an article only once']
+  }
+}
+
+Table article_feedback_table {
+  user_id UUID [ref: > user_table.uuid, not null, note: 'FK to user_table']
+  article_id UUID [ref: > news_table.uuid, not null, note: 'FK to news_table']
+  feedback TEXT [note: 'User feedback (like/dislike)']
+  created_at TIMESTAMP [note: 'Feedback timestamp']
+  Indexes {
+    (user_id, article_id) [unique, note: 'One feedback per user per article']
+  }
+}
+
+Table api_table {
+  api_url TEXT [pk, note: 'Primary key, unique API URL']
+  status TEXT [not null, note: 'API status (Active/Inactive)']
+  api_key TEXT [not null, note: 'API key']
+  name TEXT [not null, unique, note: 'API name']
+  last_accessed TIMESTAMP [note: 'Last time this API was used']
+}
+
+Table user_notification_table {
+  user_id UUID [ref: > user_table.uuid, not null, note: 'FK to user_table']
+  article_id UUID [ref: > news_table.uuid, not null, note: 'FK to news_table']
+  viewed BOOLEAN [default: false, note: 'Has the user viewed this notification?']
+  notified_at TIMESTAMP [note: 'When the notification was sent']
+  Indexes {
+    (user_id, article_id) [unique, note: 'One notification per user per article']
+  }
+}
+
+Table user_notification_config_table {
+  user_id UUID [ref: > user_table.uuid, not null, note: 'FK to user_table']
+  category TEXT [not null, note: 'News category']
+  is_enabled BOOLEAN [default: true, note: 'Is notification enabled for this category?']
+  Indexes {
+    (user_id, category) [unique, note: 'One config per user per category']
+  }
+}
+
+Table user_keyword_table {
+  user_id UUID [ref: > user_table.uuid, not null, note: 'FK to user_table']
+  keyword TEXT [not null, note: 'Keyword for notification']
+  Indexes {
+    (user_id, keyword) [unique, note: 'One keyword per user']
+  }
+} 
